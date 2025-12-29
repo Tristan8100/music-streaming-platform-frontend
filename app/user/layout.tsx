@@ -59,8 +59,8 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="flex min-h-screen flex-col bg-primary">
       {/* Header */}
-      <header className="flex h-16 items-center justify-between px-6 bg-primary text-primary-foreground shadow-md">
-        <h1 className="text-2xl font-semibold tracking-tight">Mu - So</h1>
+      <header className="flex h-16 items-center justify-between px-6 bg-primary text-primary-foreground shadow-md border border-red-500 md:mx-[50px]">
+        <h1 className="md:text-2xl text-md font-semibold">Mu - So</h1>
         {/*
         <Button
           variant="secondary"
@@ -75,11 +75,10 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
         <NavigationMenuDemo />
       </header>
 
-      <Separator />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
-        <Card className="p-6 shadow-sm bg-background">{children}</Card>
+      <main className="flex-1 overflow-y-auto rounded-xl">
+        {children}
       </main>
     </div>
   );
