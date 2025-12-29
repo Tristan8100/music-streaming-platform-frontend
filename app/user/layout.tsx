@@ -9,6 +9,10 @@ import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
 import { LogOut } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { NavigationMenu } from "@radix-ui/react-navigation-menu";
+import { NavigationMenuDemo } from "./menu";
+import { Input } from "@/components/ui/input";
+import SearchPage from "./search";
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -53,10 +57,11 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
     return null;
   }
   return (
-    <div className="flex min-h-screen flex-col bg-muted/20">
+    <div className="flex min-h-screen flex-col bg-primary">
       {/* Header */}
       <header className="flex h-16 items-center justify-between px-6 bg-primary text-primary-foreground shadow-md">
-        <h1 className="text-2xl font-semibold tracking-tight">User Dashboard</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Mu - So</h1>
+        {/*
         <Button
           variant="secondary"
           size="sm"
@@ -65,13 +70,15 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
         >
           <LogOut className="h-4 w-4" />
           Logout
-        </Button>
+        </Button> */}
+        <SearchPage />
+        <NavigationMenuDemo />
       </header>
 
       <Separator />
 
       {/* Main Content */}
-      <main className="flex-1 p-6 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto">
         <Card className="p-6 shadow-sm bg-background">{children}</Card>
       </main>
     </div>
