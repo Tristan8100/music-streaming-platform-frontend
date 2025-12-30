@@ -44,7 +44,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
       }
     };
 
-    verifyUser();
+    //verifyUser();
   }, [pathname]);// Added pathname to re-verify on route change
 
   // for debugging
@@ -54,24 +54,16 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
 
   if (!user) {
     // This will trigger if verification fails
-    return null;
+    //return null;
   }
   return (
-    <div className="flex min-h-screen flex-col bg-primary">
+    <div className="flex min-h-screen flex-col">
       {/* Header */}
-      <header className="flex h-16 items-center justify-between px-6 bg-primary text-primary-foreground shadow-md border border-red-500 md:mx-[50px]">
-        <h1 className="md:text-2xl text-md font-semibold">Mu - So</h1>
-        {/*
-        <Button
-          variant="secondary"
-          size="sm"
-          className="flex items-center gap-2"
-          onClick={logout}
-        >
-          <LogOut className="h-4 w-4" />
-          Logout
-        </Button> */}
-        <SearchPage />
+      <header className="flex h-16 items-center justify-between px-6 bg-primary text-primary-foreground shadow-md border border-red-500 md:px-[50px]">
+          <h1 className="md:text-2xl text-md font-semibold">Mu - So</h1>
+          <SearchPage />
+
+        
         <NavigationMenuDemo />
       </header>
 
