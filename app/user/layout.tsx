@@ -44,7 +44,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
       }
     };
 
-    //verifyUser();
+    verifyUser();
   }, [pathname]);// Added pathname to re-verify on route change
 
   // for debugging
@@ -54,7 +54,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
 
   if (!user) {
     // This will trigger if verification fails
-    //return null;
+    return null;
   }
   return (
     <div className="flex min-h-screen flex-col">
