@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { api2 } from "@/lib/api";
 import { Button } from "@/components/ui/button";
+import { useRef } from "react";
+import { Separator } from "@/components/ui/separator";
 
 export type UserPublic = {
   email: string;
@@ -25,6 +27,7 @@ export default function SettingsPage() {
         password: '',
         confirmPassword: ''
     });
+    const theRef = useRef<HTMLInputElement>(null);
 
     const getUser = async () => {
         try {
@@ -56,6 +59,30 @@ export default function SettingsPage() {
         }
     }
 
+    const uploadPhoto = async () => {
+        console.log('CLICKK')
+        const data = new FormData();
+        const zafile = theRef.current?.files?.[0];
+        if (!zafile) {
+            //should return error
+            return;
+        }
+        data.append('file', zafile);
+        try {
+            const res = await api2.post("/users/upload-avatar", data
+                , {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            );
+            console.log('ZA USER', res.data);
+            getUser();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     useEffect(() => {
         getUser();
     }, []);
@@ -66,7 +93,12 @@ export default function SettingsPage() {
 
     return (
         <>
-            <h1>Settings</h1>
+        <div className="m-4">
+            <div className="mt-8">
+                <h1 className="text-4xl">Account Settings</h1>
+                <p>Manage your account settings</p>
+            </div>
+            <Separator className="my-4" />
             <div>{user?.name}</div>
             <div>{user?.email}</div>
             <div>{user?.photo_url}</div>
@@ -79,7 +111,12 @@ export default function SettingsPage() {
             <input type="password" placeholder="new password" value={password?.password} onChange={(e) => setPassword({ ...password, password: e.target.value })} />
             <input type="password" placeholder="confirm password" value={password?.confirmPassword} onChange={(e) => setPassword({ ...password, confirmPassword: e.target.value })} />
             <Button onClick={updatePassword}>Save Password</Button>
-
+            <div>Change Photo</div>
+            <div className="flex gap-4 border">
+                <input type="file" name="file" ref={theRef} />
+                <Button onClick={uploadPhoto}>Upload</Button>
+            </div>
+        </div>
         </>
     );
 }
