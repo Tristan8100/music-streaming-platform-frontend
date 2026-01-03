@@ -4,6 +4,7 @@ import { api2 } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner"
 
 export type UserPublic = {
   email: string;
@@ -41,6 +42,7 @@ export default function SettingsPage() {
         try {
             const res = await api2.patch("/users/update-name", { name: user?.name });
             console.log('ZA USER', res.data);
+            toast.success('Name updated successfully');
             getUser();
         } catch (error) {
             console.error(error);
@@ -83,6 +85,7 @@ export default function SettingsPage() {
     }
 
     useEffect(() => {
+        //toast.success('Welcome back, ' + user?.name);
         getUser();
     }, []);
 
@@ -132,7 +135,7 @@ export default function SettingsPage() {
                                 onChange={(e) => setUser({ ...user, name: e.target.value })}
                                 className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
-                            <Button onClick={updateUserName}>Save</Button>
+                            <Button onClick={updateUserName} disabled={loading}>Save</Button>
                         </div>
                     </div>
                     <div>
@@ -183,7 +186,7 @@ export default function SettingsPage() {
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
-                    <Button onClick={updatePassword} className="w-full">Update Password</Button>
+                    <Button onClick={updatePassword} className="w-full" disabled={loading}>Update Password</Button>
                 </div>
             </div>
         </div>

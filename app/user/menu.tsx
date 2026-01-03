@@ -65,7 +65,7 @@ export function NavigationMenuDemo() {
             <ul className="grid w-[100px] gap-4">
               <li>
                 <NavigationMenuLink asChild>
-                  <Link href="#" className="flex-row items-center gap-2">
+                  <Link href="/user/settings" className="flex-row items-center gap-2">
                     <CircleHelpIcon />
                     Account
                   </Link>

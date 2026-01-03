@@ -59,7 +59,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header */}
-      <header className="flex h-16 items-center justify-between px-6 bg-primary text-primary-foreground shadow-md border border-red-500 md:px-[50px]">
+      <header className="flex h-16 items-center justify-between px-6 bg-primary text-primary-foreground shadow-md md:px-[50px]">
           <h1 className="md:text-2xl text-md font-semibold">Mu - So</h1>
           <SearchPage />
 

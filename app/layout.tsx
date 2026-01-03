@@ -4,6 +4,7 @@ import "./globals.css";
 import QueryWrapper from '@/lib/query';
 import AuthProviderWrapper from "./authwrapper";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { Toaster } from "@/components/ui/sonner"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({
       <QueryWrapper>
       <AuthProvider>
       {children}
+      <Toaster position="top-right"/>
       </AuthProvider>
       </QueryWrapper>
       </body>
