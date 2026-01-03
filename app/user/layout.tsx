@@ -13,6 +13,7 @@ import { NavigationMenu } from "@radix-ui/react-navigation-menu";
 import { NavigationMenuDemo } from "./menu";
 import { Input } from "@/components/ui/input";
 import SearchPage from "./search";
+import { AppSidebar } from "@/components/app-sidebar";
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -58,19 +59,21 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
   }
   return (
     <div className="flex min-h-screen flex-col">
+      <div></div>
+      
       {/* Header */}
       <header className="flex h-16 items-center justify-between px-6 bg-primary text-primary-foreground shadow-md md:px-[50px]">
-          <h1 className="md:text-2xl text-md font-semibold">Mu - So</h1>
-          <SearchPage />
-
-        
+        <div></div>
+        <SearchPage /> 
         <NavigationMenuDemo />
       </header>
-
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto rounded-xl">
-        {children}
+    
+      {/* Main Content thinggy */}
+      <main className="flex-1 overflow-y-auto rounded-xl relative">
+        <AppSidebar />
+        <div className="md:ml-20">
+          {children}
+        </div>
       </main>
     </div>
   );
