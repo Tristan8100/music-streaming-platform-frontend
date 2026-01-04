@@ -14,6 +14,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import { cn } from "@/lib/utils"
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -53,11 +54,11 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ]
 
-export function NavigationMenuDemo() {
+export function NavigationMenuDemo({className}: {className?: string}) {
   const isMobile = useIsMobile()
 
   return (
-    <NavigationMenu viewport={isMobile}>
+    <NavigationMenu viewport={isMobile} className={cn(className)}>
       <NavigationMenuList className="flex-wrap">
         <NavigationMenuItem>
           <NavigationMenuTrigger className="bg-primary">Settings</NavigationMenuTrigger>
