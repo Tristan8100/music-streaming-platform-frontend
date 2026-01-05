@@ -72,7 +72,9 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
       <main className="flex-1 overflow-y-auto rounded-xl relative">
         <AppSidebar />
         <div className="md:ml-20">
-          {children}
+          <div className="border md:ml-54 md:mr-4 rounded-2xl mt-4 p-8 bg-background h-full shadow">
+            {children}
+          </div>
         </div>
       </main>
     </div>

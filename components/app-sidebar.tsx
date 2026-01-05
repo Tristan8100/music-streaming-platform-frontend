@@ -17,7 +17,7 @@ const menuItems: MenuItem[] = [
   {
     label: "Feed",
     icon: <Music className="w-5 h-5" />,
-    href: "/feed",
+    href: "/user/feed",
   },
   {
     label: "Liked Songs",
@@ -34,6 +34,16 @@ const menuItems: MenuItem[] = [
       { label: "Albums", href: "/popular/albums" },
     ],
   },
+  {
+    label: "Artist Mode",
+    icon: <Music className="w-5 h-5" />,
+    href: "/artist-mode",
+    submenu: [
+      { label: "Manage Albums", href: "/user/my-albums" },
+      { label: "Profile", href: "/artist-mode/my-profile" },
+      { label: "Analytics", href: "/artist-mode/my-analytics" },
+    ]
+  }
 ]
 
 function SidebarContent({ isCollapsed }: { isCollapsed: boolean }) {

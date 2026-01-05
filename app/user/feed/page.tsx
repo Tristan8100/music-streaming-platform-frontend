@@ -3,6 +3,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Heart, Play } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { api2 } from '@/lib/api';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import Link from 'next/link';
 
 export type Artist = {
     _id: string;
@@ -56,7 +58,7 @@ export default function FeedPage() {
     }, []);
 
     return (
-        <div className="border md:ml-54 md:mr-4 rounded-2xl mt-4 p-8 bg-white h-full">
+        <div>
             {/* Artists Section */}
             <div className="mb-12">
                 <h2 className="text-2xl font-bold mb-6">Artists</h2>
@@ -64,14 +66,22 @@ export default function FeedPage() {
                 {followings && followings.length > 0 ? (
                     followings.map((artist) => (
                     <div key={artist._id} className="flex flex-col items-center flex-shrink-0">
-                        <div className="w-28 h-28 rounded-full overflow-hidden bg-gray-200 mb-2">
-                        <img
-                            src={artist.following?.photo_url}
-                            alt={artist.following?.name}
-                            className="w-full h-full object-cover"
-                        />
-                        </div>
-                        <span className="text-sm font-medium text-center">{artist.following?.name}</span>
+                        <Link href={`/artist/${artist.following?._id}`}> {/* CHANGEEE */}
+                            <div className="w-28 h-28 rounded-full overflow-hidden bg-gray-200 mb-2">
+                            {artist.following?.photo_url ? 
+                                <img
+                                    src={artist.following?.photo_url}
+                                    alt={artist.following?.name}
+                                    className="w-full h-full object-cover"
+                                />
+                            : 
+                                <Avatar className="w-28 h-28">
+                                    <AvatarFallback>{artist.following?.name?.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                            }
+                            </div>
+                            <span className="text-sm font-medium text-center">{artist.following?.name}</span>
+                        </Link>
                     </div>
                     ))
                 ) : (
