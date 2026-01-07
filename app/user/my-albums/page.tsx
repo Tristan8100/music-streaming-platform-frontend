@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { api2 } from "@/lib/api";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Link from "next/link";
+import { Separator } from "@/components/ui/separator";
 
 export interface User {
   _id: string
@@ -46,7 +47,25 @@ export default function MyAlbumsPage() {
 
     return (
         <>
-            <h1>My Albums</h1>
+            <h1 className="text-4xl font-bold">Manage Albums</h1>
+            <p>Manage your albums</p>
+
+            <Separator className="mt-4" />
+
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                { albums && albums.map((data, index) => {
+                    return (
+                        <Link href={`/user/my-albums/${data._id}`} key={data._id} className="bg-card w-[300px] h-[380px] rounded-xl relative">
+                            <img src={data.photo_url} alt={data.title} className="object-cover rounded-xl w-full h-full shadow-lg" />
+                            <div className="absolute bottom-4 left-4">
+                                <h1 className="text-2xl font-bold">{data.title}</h1>
+                                <p>{data.description}</p>
+                            </div>
+                        </Link>
+                    )
+                })}
+            </div>
+            {/* <h1>My Albums</h1>
             { albums && albums.map((alb) => {
                 return (
                     <Card key={alb._id}>
@@ -58,7 +77,7 @@ export default function MyAlbumsPage() {
                         <Link href="">View</Link>
                     </Card>
                 )
-            })}
+            })} */}
         </>
     );
 }
