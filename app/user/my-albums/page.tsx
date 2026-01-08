@@ -4,6 +4,8 @@ import { api2 } from "@/lib/api";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { Dialog } from "@radix-ui/react-dialog";
+import { DialogDemo } from "./add-album";
 
 export interface User {
   _id: string
@@ -47,8 +49,11 @@ export default function MyAlbumsPage() {
 
     return (
         <>
-            <h1 className="text-4xl font-bold">Manage Albums</h1>
-            <p>Manage your albums</p>
+            <div>
+                <h1 className="text-4xl font-bold">Manage Albums</h1>
+                <p>Manage your albums</p>
+                <DialogDemo className="mr-auto" />
+            </div>
 
             <Separator className="mt-4" />
 
