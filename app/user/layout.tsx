@@ -14,11 +14,14 @@ import { NavigationMenuDemo } from "./menu";
 import { Input } from "@/components/ui/input";
 import SearchPage from "./search";
 import { AppSidebar } from "@/components/app-sidebar";
+import { cn } from "@/lib/utils";
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const { user, setUser, logout } = useAuth();
     const pathname = usePathname();
+    const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false)
+    const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false)
 
     // On mount, verify token and fetch user info, diy middleware for every refresh
     useEffect(() => {
@@ -58,7 +61,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
     return null;
   }
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex h-screen flex-col overflow-hidden">
       <div></div>
       
       {/* Header */}
@@ -70,9 +73,9 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
     
       {/* Main Content thinggy */}
       <main className="flex-1 overflow-y-auto rounded-xl relative">
-        <AppSidebar />
+        <AppSidebar className="fixed top-16 left-0 h-[calc(100vh-4rem)] overflow-hidden" isDesktopCollapsed={isDesktopCollapsed} setIsDesktopCollapsed={setIsDesktopCollapsed} isOffcanvasOpen={isOffcanvasOpen} setIsOffcanvasOpen={setIsOffcanvasOpen} />
         <div className="md:ml-20">
-          <div className="md:ml-54 md:mr-4 rounded-2xl mt-4 p-8 bg-background h-full">
+          <div className={cn("md:ml-8 border transition-[margin] duration-300 ease-in-out md:mr-4 rounded-2xl mt-4 p-8 bg-background h-full", !isDesktopCollapsed && "md:ml-54")}>
             {children}
           </div>
         </div>

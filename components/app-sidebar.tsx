@@ -147,9 +147,17 @@ function SidebarContent({ isCollapsed }: { isCollapsed: boolean }) {
   )
 }
 
-export function AppSidebar() {
-  const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false)
-  const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false)
+interface AppSidebarProps {
+  className?: string,
+  isDesktopCollapsed: boolean
+  setIsDesktopCollapsed: React.Dispatch<React.SetStateAction<boolean>>
+  setIsOffcanvasOpen: React.Dispatch<React.SetStateAction<boolean>>
+  isOffcanvasOpen: boolean
+}
+
+export function AppSidebar({ className, isDesktopCollapsed, isOffcanvasOpen, setIsDesktopCollapsed, setIsOffcanvasOpen }: AppSidebarProps) {
+  // const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false)
+  // const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false)
 
   return (
     <>
@@ -158,6 +166,7 @@ export function AppSidebar() {
         className={cn(
           "hidden md:flex flex-col h-full bg-sidebar rounded-2xl m-4 shadow border-r border-sidebar-border absolute overflow-y-auto left-0 top-0 transition-all duration-300 z-40",
           isDesktopCollapsed ? "w-20" : "w-64",
+          className
         )}
       >
         <div className="flex items-center justify-center p-2 border">
