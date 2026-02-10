@@ -75,7 +75,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
       <main className="flex-1 overflow-y-auto rounded-xl relative">
         <AppSidebar className="fixed top-16 left-0 h-[calc(100vh-4rem)] overflow-hidden" isDesktopCollapsed={isDesktopCollapsed} setIsDesktopCollapsed={setIsDesktopCollapsed} isOffcanvasOpen={isOffcanvasOpen} setIsOffcanvasOpen={setIsOffcanvasOpen} />
         <div className="md:ml-20">
-          <div className={cn("md:ml-8 border transition-[margin] duration-300 ease-in-out md:mr-4 rounded-2xl mt-4 p-8 bg-background h-full", !isDesktopCollapsed && "md:ml-54")}>
+          <div className={cn("md:ml-8 transition-[margin] duration-300 ease-in-out md:mr-4 rounded-2xl mt-4 p-8 bg-background h-full", !isDesktopCollapsed && "md:ml-54")}>
             {children}
           </div>
         </div>

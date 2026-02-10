@@ -119,6 +119,7 @@ export default function FeedPage() {
             ))
           )}
         </div>
+        <Link href="/artist" className='text-blue-500'>View All</Link>
       </div>
 
       {/*  Albums */}
@@ -142,6 +143,7 @@ export default function FeedPage() {
             </Card>
           ))}
         </div>
+        <Link href="/albums" className='text-blue-500'>View All</Link>
       </div>
 
       {/* Songs*/}
@@ -176,6 +178,7 @@ export default function FeedPage() {
             </div>
           ))}
         </div>
+        <Link href="/songs" className='text-blue-500'>View All</Link>
       </div>
     </div>
   );
