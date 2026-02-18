@@ -14,7 +14,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useEffect, useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
-
+import { api2 } from "@/lib/api"
+import { useRef } from "react"
 
 
 export type Albums = {
@@ -31,7 +32,7 @@ export function DialogDemo({ className }: React.HTMLAttributes<HTMLDivElement>) 
             description: ''
         }
     );
-
+    const theRef = useRef<HTMLInputElement>(null);
     const [genreInput, setGenreInput] = useState("");
 
     const handleGenreKeyDown = (e : React.KeyboardEvent) => {
@@ -44,6 +45,36 @@ export function DialogDemo({ className }: React.HTMLAttributes<HTMLDivElement>) 
         setGenreInput("");
         }
     };
+
+    const saveAlbum = async () => {
+      try {
+        const zaFile = theRef.current?.files?.[0];
+        if (!zaFile) return;
+
+        const formData = new FormData();
+        formData.append('title', album.title);
+        formData.append('description', album.description || '');
+
+        album.genre_album?.forEach((genre) => {
+          formData.append('genre_album', genre);
+        });
+
+        formData.append('file', zaFile);
+
+        const genres = formData.getAll('genre_album'); // returns an array
+console.log('genre_album:', genres);
+
+        const response = await api2.post('/music/albums', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
 
   return (
     <div>
@@ -68,14 +99,12 @@ export function DialogDemo({ className }: React.HTMLAttributes<HTMLDivElement>) 
                     </div>
                 ))}
             </div>
-        
+        <Input type="file" name="file" ref={theRef} placeholder="Album Photo" />
         <DialogFooter>
           <DialogClose asChild>
-            <Button>Save</Button>
+            <Button onClick={saveAlbum}>Save</Button>
           </DialogClose>
         </DialogFooter>
-        
-        
       </DialogContent>
     </Dialog>
     </div>
