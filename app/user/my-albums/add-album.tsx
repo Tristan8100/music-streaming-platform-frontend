@@ -16,6 +16,7 @@ import { useEffect, useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { api2 } from "@/lib/api"
 import { useRef } from "react"
+import { on } from "events"
 
 
 export type Albums = {
@@ -24,7 +25,11 @@ export type Albums = {
     description?: string
 }
 
-export function DialogDemo({ className }: React.HTMLAttributes<HTMLDivElement>) {
+export interface DialogDemoProps {
+    onSuccess?: () => void;
+}
+
+export function DialogDemo({ onSuccess }: DialogDemoProps) {
     const [album, setAlbum] = useState<Albums>(
         {
             title: '',
@@ -62,7 +67,7 @@ export function DialogDemo({ className }: React.HTMLAttributes<HTMLDivElement>) 
         formData.append('file', zaFile);
 
         const genres = formData.getAll('genre_album'); // returns an array
-console.log('genre_album:', genres);
+        console.log('genre_album:', genres);
 
         const response = await api2.post('/music/albums', formData, {
           headers: {
@@ -70,6 +75,7 @@ console.log('genre_album:', genres);
           },
         });
         console.log(response.data);
+        onSuccess?.();
       } catch (error) {
         console.error(error);
       }

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { Dialog } from "@radix-ui/react-dialog";
 import { DialogDemo } from "./add-album";
+import { Button } from "@/components/ui/button";
 
 export interface User {
   _id: string
@@ -52,7 +53,7 @@ export default function MyAlbumsPage() {
             <div>
                 <h1 className="text-4xl font-bold">Manage Albums</h1>
                 <p>Manage your albums</p>
-                <DialogDemo className="mr-auto" />
+                <DialogDemo onSuccess={fetchAlbums} />
             </div>
 
             <Separator className="mt-4" />
@@ -70,19 +71,7 @@ export default function MyAlbumsPage() {
                     )
                 })}
             </div>
-            {/* <h1>My Albums</h1>
-            { albums && albums.map((alb) => {
-                return (
-                    <Card key={alb._id}>
-                        <CardHeader>{alb.title}</CardHeader>
-                        <CardContent>
-                            {alb.description}
-                            <img src={alb.photo_url} alt={alb.title} />
-                        </CardContent>
-                        <Link href="">View</Link>
-                    </Card>
-                )
-            })} */}
+
         </>
     );
 }
