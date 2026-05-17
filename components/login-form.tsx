@@ -106,8 +106,12 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                 required
               />
             </div>
-            <Button type="submit" className="w-full">
-              Login
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loginMutation.isPending}
+            >
+              {loginMutation.isPending ? "Logging in..." : "Login"}
             </Button>
             {error && <div className="text-red-500 text-center text-sm mt-2">{error}</div>}
           </form>

@@ -17,20 +17,18 @@ import { Textarea } from "@/components/ui/textarea"
 import { api2 } from "@/lib/api"
 import { useRef } from "react"
 import { on } from "events"
+import { AlbumsFetch } from "./types"
 
 
-export type Albums = {
-    title: string,
-    genre_album?: string[],
-    description?: string
-}
+
 
 export interface DialogDemoProps {
     onSuccess?: () => void;
+    id?: string
 }
 
-export function DialogDemo({ onSuccess }: DialogDemoProps) {
-    const [album, setAlbum] = useState<Albums>(
+export function DialogDemo({ onSuccess, id }: DialogDemoProps) {
+    const [album, setAlbum] = useState<AlbumsFetch>(
         {
             title: '',
             genre_album: [],
@@ -39,6 +37,21 @@ export function DialogDemo({ onSuccess }: DialogDemoProps) {
     );
     const theRef = useRef<HTMLInputElement>(null);
     const [genreInput, setGenreInput] = useState("");
+
+    useEffect(() => {
+        if (id) {
+            getAlbum();
+        }
+    }, [id]);
+
+    const getAlbum = async () => {
+        try {
+            const response = await api2.get<AlbumsFetch>(`/music/albums/${id}`);
+            setAlbum(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const handleGenreKeyDown = (e : React.KeyboardEvent) => {
         if (e.key === "Enter" && genreInput.trim() !== "") {
@@ -90,9 +103,9 @@ export function DialogDemo({ onSuccess }: DialogDemoProps) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add Album</DialogTitle>
+          <DialogTitle>{id ? 'Edit Album' : 'Add Album'}</DialogTitle>
           <DialogDescription>
-            Add your new album
+            {id ? 'Edit Album' : 'Add Album'}
           </DialogDescription>
         </DialogHeader>
         <Input type="text" placeholder="Album Title" value={album?.title} onChange={(e) => setAlbum({...album, title: e.target.value}) } />
@@ -107,9 +120,7 @@ export function DialogDemo({ onSuccess }: DialogDemoProps) {
             </div>
         <Input type="file" name="file" ref={theRef} placeholder="Album Photo" />
         <DialogFooter>
-          <DialogClose asChild>
             <Button onClick={saveAlbum}>Save</Button>
-          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
