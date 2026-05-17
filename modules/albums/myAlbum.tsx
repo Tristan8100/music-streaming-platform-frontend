@@ -6,9 +6,15 @@ import { Separator } from "@/components/ui/separator";
 import { DialogDemo } from "./add-album";
 import Link from "next/link";
 import { Album } from "./types";
+import { useEffect } from "react";
 
 export default function MyAlbumsPage() {
   const { albums, isLoading, refreshAlbums } = useUserAlbums();
+
+  useEffect(() => {
+    refreshAlbums();
+    console.log("REFRESH TRIGGER");
+  }, [refreshAlbums]);
 
   if (isLoading) {
     return (
@@ -61,6 +67,7 @@ function AlbumGridItem({
       <div className="absolute top-3 right-3 z-10">
         <DialogDemo
           id={album._id}
+          album={album}
           onSuccess={refreshAlbums}
         />
       </div>
@@ -70,8 +77,9 @@ function AlbumGridItem({
         href={`/user/my-albums/${album._id}`}
         className="bg-card rounded-xl block overflow-hidden w-full h-full"
       >
+        {/* Replace with new URL */}
         <img
-          src={album.photo_url}
+          src={album.photo_url} 
           alt={album.title}
           className="object-cover rounded-xl w-full h-full shadow-lg transition-transform duration-300 group-hover:scale-105"
         />

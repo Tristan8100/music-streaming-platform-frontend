@@ -6,6 +6,8 @@ import { Album } from "./types";
 export function useUserAlbums() {
   const [albums, setAlbums] = useState<Album[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const fetchAlbums = useCallback(async () => {
     try {
@@ -18,13 +20,18 @@ export function useUserAlbums() {
     }
   }, []);
 
-  useEffect(() => {
-    fetchAlbums();
-  }, [fetchAlbums]);
+  // useEffect(() => {
+  //   fetchAlbums();
+  // }, [fetchAlbums]);
+  
 
   return {
     albums,
     isLoading,
-    refreshAlbums: fetchAlbums
+    refreshAlbums: fetchAlbums,
+    error,
+    success,
+    setError,
+    setSuccess
   };
 }

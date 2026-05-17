@@ -24,23 +24,27 @@ import { AlbumsFetch } from "./types"
 
 export interface DialogDemoProps {
     onSuccess?: () => void;
-    id?: string
+    id?: string;
+    album?: AlbumsFetch
 }
 
-export function DialogDemo({ onSuccess, id }: DialogDemoProps) {
+export function DialogDemo({ onSuccess, id, album: albumData }: DialogDemoProps) {
     const [album, setAlbum] = useState<AlbumsFetch>(
         {
-            title: '',
-            genre_album: [],
-            description: ''
+            title: albumData?.title || '',
+            genre_album: albumData?.genre_album || [],
+            description: albumData?.description || ''
         }
     );
     const theRef = useRef<HTMLInputElement>(null);
     const [genreInput, setGenreInput] = useState("");
 
+    const [Loading, setLoading] = useState(false);
+
     useEffect(() => {
         if (id) {
             getAlbum();
+            console.log('ID', id);
         }
     }, [id]);
 
@@ -67,7 +71,9 @@ export function DialogDemo({ onSuccess, id }: DialogDemoProps) {
     const saveAlbum = async () => {
       try {
         const zaFile = theRef.current?.files?.[0];
-        if (!zaFile) return;
+        if (!zaFile && !id) {
+          throw new Error("No file selected");
+        }
 
         const formData = new FormData();
         formData.append('title', album.title);
@@ -77,18 +83,35 @@ export function DialogDemo({ onSuccess, id }: DialogDemoProps) {
           formData.append('genre_album', genre);
         });
 
-        formData.append('file', zaFile);
-
+        if(zaFile) {
+          formData.append('file', zaFile);
+        }
+        
         const genres = formData.getAll('genre_album'); // returns an array
         console.log('genre_album:', genres);
 
-        const response = await api2.post('/music/albums', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        console.log(response.data);
-        onSuccess?.();
+        if(id) {
+          console.log('UPDATE', id);
+          const response = await api2.post(`/music/albums-update/${id}`, formData, { // Post since it has files, idk why but it dont workon put.
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          console.log(response.data);
+          onSuccess?.();
+        } else {
+          console.log('CREATE');
+          const response = await api2.post('/music/albums', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          console.log(response.data);
+          onSuccess?.();
+        }
+
+        
+        
       } catch (error) {
         console.error(error);
       }
@@ -105,7 +128,7 @@ export function DialogDemo({ onSuccess, id }: DialogDemoProps) {
         <DialogHeader>
           <DialogTitle>{id ? 'Edit Album' : 'Add Album'}</DialogTitle>
           <DialogDescription>
-            {id ? 'Edit Album' : 'Add Album'}
+            {id ? 'Edit Album' : 'Add Album'} {id}
           </DialogDescription>
         </DialogHeader>
         <Input type="text" placeholder="Album Title" value={album?.title} onChange={(e) => setAlbum({...album, title: e.target.value}) } />
