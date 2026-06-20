@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import SearchPage from "./search";
 import { AppSidebar } from "@/components/app-sidebar";
 import { cn } from "@/lib/utils";
+import MusicPlayer from "@/modules/song/songPlayer";
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -80,6 +81,8 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
           </div>
         </div>
       </main>
+      <div className="border border-red-500"><MusicPlayer /></div>
+      
     </div>
   );
 }

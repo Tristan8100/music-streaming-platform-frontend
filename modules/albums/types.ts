@@ -1,5 +1,7 @@
 // types.ts
 
+import { Song } from "../song/types";
+
 export interface User {
   _id: string;
   email: string;
@@ -26,19 +28,7 @@ export type AlbumsFetch = {
 }
 
 //newly added
-export interface Song {
-  _id: string;
-  name: string;
-  album_id: string;
-  user_id: string;
-  genre_song: string[];
-  plays: number;
-  likes_count: number;
-  song_local_path: string;
-  song_url: string;
-  created_at: string;
-  updated_at: string;
-}
+
 
 export interface AlbumDetails extends Omit<Album, "owner"> {
   owner: string;
