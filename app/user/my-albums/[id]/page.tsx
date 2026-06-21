@@ -1,10 +1,15 @@
 'use client';
+import { Button } from "@/components/ui/button";
 import { useUserAlbums } from "@/modules/albums/hook";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
+import { useDispatch } from 'react-redux';
+import { setCurrentSong, setCurrentCover } from '@/store/store';
 
 export default function MyAlbums() {
     const params = useParams<{ id: string }>();
+
+    const dispatch = useDispatch();
 
     const { 
         albumSongs,
@@ -49,7 +54,7 @@ export default function MyAlbums() {
                     ) : (
                         <ul>
                             {albumSongs.songs.map(song => (
-                                <li key={song._id}>
+                                <div key={song._id}>
                                     <h4>{song.name}</h4>
 
                                     <p>Plays: {song.plays}</p>
@@ -60,7 +65,8 @@ export default function MyAlbums() {
                                             type="audio/mpeg"
                                         />
                                     </audio>
-                                </li>
+                                    <Button onClick={() => { dispatch(setCurrentSong(song)), dispatch(setCurrentCover(albumSongs.data.photo_url)) }}>Play</Button>
+                                </div>
                             ))}
                         </ul>
                     )}
