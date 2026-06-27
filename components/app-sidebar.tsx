@@ -40,8 +40,8 @@ const menuItems: MenuItem[] = [
     href: "/artist-mode",
     submenu: [
       { label: "Manage Albums", href: "/user/my-albums" },
-      { label: "Profile", href: "/artist-mode/my-profile" },
-      { label: "Analytics", href: "/artist-mode/my-analytics" },
+      { label: "Profile", href: "/user/settings" },
+      { label: "Analytics", href: "/user/my-analytics" },
     ]
   }
 ]

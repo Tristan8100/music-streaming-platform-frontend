@@ -5,6 +5,8 @@ import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch } from 'react-redux';
 import { setCurrentSong, setCurrentCover } from '@/store/store';
+import CreateSongDialog from "@/modules/song/createSong";
+import EditSongDialog from "@/modules/song/editSong";
 
 export default function MyAlbums() {
     const params = useParams<{ id: string }>();
@@ -24,6 +26,10 @@ export default function MyAlbums() {
     return (
         <div>
             <h1>My Albums {params.id}</h1>
+            <CreateSongDialog
+            albumId={params.id}
+            onSuccess={() => fetchOneAlbumWithSongs(params.id)}
+            />;
 
             {isLoading && <p>Loading...</p>}
 
@@ -66,6 +72,10 @@ export default function MyAlbums() {
                                         />
                                     </audio>
                                     <Button onClick={() => { dispatch(setCurrentSong(song)), dispatch(setCurrentCover(albumSongs.data.photo_url)) }}>Play</Button>
+                                    <EditSongDialog
+                                    song={song}
+                                    onSuccess={() => fetchOneAlbumWithSongs(params.id)}
+                                    />;
                                 </div>
                             ))}
                         </ul>
