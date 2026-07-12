@@ -29,9 +29,9 @@ const menuItems: MenuItem[] = [
     icon: <Flame className="w-5 h-5" />,
     href: "/popular",
     submenu: [
-      { label: "Songs", href: "/popular/songs" },
-      { label: "Artists", href: "/popular/artists" },
-      { label: "Albums", href: "/popular/albums" },
+      { label: "Songs", href: "/user/popular/songs" },
+      { label: "Artists", href: "/user/popular/artists" },
+      { label: "Albums", href: "/user/popular/albums" },
     ],
   },
   {

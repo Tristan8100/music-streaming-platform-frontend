@@ -19,6 +19,8 @@ export interface Album {
   description: string;
   created_at: string;
   updated_at: string;
+
+  songCount: number;
 }
 
 export type AlbumsFetch = {
