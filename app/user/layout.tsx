@@ -16,6 +16,7 @@ import SearchPage from "./search";
 import { AppSidebar } from "@/components/app-sidebar";
 import { cn } from "@/lib/utils";
 import MusicPlayer from "@/modules/song/songPlayer";
+import { BottomNavigation } from "@/components/bottom-navigation";
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -75,14 +76,16 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
       {/* Main Content thinggy */}
       <main className="flex-1 overflow-y-auto rounded-xl relative">
         <AppSidebar className="fixed top-16 left-0 h-[calc(100vh-4rem)] overflow-hidden" isDesktopCollapsed={isDesktopCollapsed} setIsDesktopCollapsed={setIsDesktopCollapsed} isOffcanvasOpen={isOffcanvasOpen} setIsOffcanvasOpen={setIsOffcanvasOpen} />
-        <div className="md:ml-20">
+        <div className="md:ml-20 mb-20 md:mb-0">
           <div className={cn("md:ml-8 transition-[margin] duration-300 ease-in-out md:mr-4 rounded-2xl mt-4 p-8 bg-background h-full", !isDesktopCollapsed && "md:ml-54")}>
             {children}
           </div>
         </div>
       </main>
-      <div className="border border-red-500"><MusicPlayer /></div>
       
+      {/* Player and Bottom Nav */}
+      <MusicPlayer />
+      <BottomNavigation />
     </div>
   );
 }
