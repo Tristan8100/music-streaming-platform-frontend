@@ -37,6 +37,8 @@ export function PlayerControls({
   onShuffleChange,
 }: PlayerControlsProps) {
   const [isSliding, setIsSliding] = useState(false);
+  const [dragProgress, setDragProgress] = useState<number | null>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
 
   const formatTime = (time: number) => {
     if (!time || isNaN(time)) return "0:00";
@@ -47,23 +49,68 @@ export function PlayerControls({
 
   const progress = duration ? (currentTime / duration) * 100 : 0;
 
+  // Handle progress bar drag
+  const handleMouseDown = () => {
+    setIsSliding(true);
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isSliding || !progressBarRef.current) return;
+
+    const rect = progressBarRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const newProgress = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    const newTime = (newProgress / 100) * duration;
+
+    setDragProgress(newProgress);
+    onSeek?.(newTime);
+  };
+
+  const handleMouseUp = () => {
+    setIsSliding(false);
+    setDragProgress(null);
+  };
+
+  // Add/remove mouse move listener when sliding starts/stops
+  useEffect(() => {
+    if (isSliding) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isSliding, duration]);
+
   return (
     <div className="w-full space-y-3">
       {/* Progress Bar */}
       <div className="space-y-1">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground w-8">{formatTime(currentTime)}</span>
-          <div className="flex-1 h-1 bg-gray-300 rounded-full cursor-pointer group">
+          <span className="text-xs text-muted-foreground w-8">
+            {formatTime(isSliding && dragProgress !== null ? (dragProgress / 100) * duration : currentTime)}
+          </span>
+          <div
+            ref={progressBarRef}
+            className="flex-1 h-2 bg-gray-300 rounded-full cursor-pointer group hover:h-3 transition-all"
+            onMouseDown={handleMouseDown}
+            onClick={(e) => {
+              if (!isSliding) {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const newTime = (e.clientX - rect.left) / rect.width * duration;
+                onSeek?.(newTime);
+              }
+            }}
+          >
             <div
-              className="h-full bg-green-500 rounded-full transition-all group-hover:bg-green-400"
-              style={{ width: `${progress}%` }}
-              onClick={(e) => {
-                const rect = e.currentTarget.parentElement?.getBoundingClientRect();
-                if (rect) {
-                  const newTime = (e.clientX - rect.left) / rect.width * duration;
-                  onSeek?.(newTime);
-                }
-              }}
+              className={cn(
+                "h-full bg-green-500 rounded-full transition-all",
+                isSliding && "bg-green-600",
+                !isSliding && "group-hover:bg-green-400"
+              )}
+              style={{ width: `${dragProgress !== null ? dragProgress : progress}%` }}
             />
           </div>
           <span className="text-xs text-muted-foreground w-8 text-right">{formatTime(duration)}</span>

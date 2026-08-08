@@ -4,7 +4,7 @@ import { useUserAlbums } from "@/modules/albums/hook";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
-import { setCurrentSong, setCurrentCover } from '@/store/store';
+import { setCurrentSong, setCurrentCover, setQueue } from '@/store/store';
 import CreateSongDialog from "@/modules/song/createSong";
 import EditSongDialog from "@/modules/song/editSong";
 import { motion } from "framer-motion";
@@ -146,7 +146,13 @@ export default function AlbumDetailPage() {
 
                         {/* Action Buttons */}
                         <div className="flex flex-wrap gap-3">
-                            <Button className="bg-green-500 hover:bg-green-600 gap-2">
+                            <Button 
+                                onClick={() => {
+                                    dispatch(setQueue({ songs: albumSongs.songs, currentSongId: albumSongs.songs[0]?._id }));
+                                    dispatch(setCurrentCover(albumSongs.data.photo_url));
+                                }}
+                                className="bg-green-500 hover:bg-green-600 gap-2"
+                            >
                                 <Play className="w-4 h-4" />
                                 Play All
                             </Button>
@@ -215,6 +221,7 @@ export default function AlbumDetailPage() {
                                 index={index}
                                 albumId={params.id}
                                 albumCover={albumSongs.data.photo_url}
+                                allSongs={albumSongs.songs}
                                 onSuccess={() => fetchOneAlbumWithSongs(params.id)}
                             />
                         ))}
@@ -230,15 +237,17 @@ interface SongRowProps {
     index: number;
     albumId: string;
     albumCover: string;
+    allSongs: any[];
     onSuccess: () => void;
 }
 
-function SongRow({ song, index, albumId, albumCover, onSuccess }: SongRowProps) {
+function SongRow({ song, index, albumId, albumCover, allSongs, onSuccess }: SongRowProps) {
     const dispatch = useDispatch();
     const [isHovered, setIsHovered] = useState(false);
 
     const handlePlaySong = () => {
-        dispatch(setCurrentSong(song));
+        // Set queue with all songs and the current song ID
+        dispatch(setQueue({ songs: allSongs, currentSongId: song._id }));
         dispatch(setCurrentCover(albumCover));
     };
 

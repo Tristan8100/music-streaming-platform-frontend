@@ -13,7 +13,7 @@ import { GenreTag } from '@/components/genre-tag';
 import { SongRowSkeleton } from '@/components/animated-skeleton';
 import { Button } from '@/components/ui/button';
 import { useDispatch } from 'react-redux';
-import { setCurrentSong, setCurrentCover } from '@/store/store';
+import { setCurrentSong, setCurrentCover, setQueue } from '@/store/store';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -40,7 +40,7 @@ export default function FeedPage() {
   const { followings, albums, songs, isLoading } = useFeedData();
 
   const handlePlaySong = (song: Song) => {
-    dispatch(setCurrentSong(song));
+    dispatch(setQueue({ songs, currentSongId: song._id }));
   };
 
   if (isLoading) {

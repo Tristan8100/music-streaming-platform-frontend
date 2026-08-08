@@ -1,16 +1,13 @@
-'use client';
-
 import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { RootState } from '@/store/store';
-import { clearSong } from '@/store/store';
+import { clearSong, playNext, playPrevious, toggleShuffle, setCurrentCover } from '@/store/store';
 import {
     Drawer,
     DrawerContent,
     DrawerHeader,
     DrawerTitle,
-    DrawerClose,
 } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { PlayerControls } from '@/components/player-controls';
@@ -27,7 +24,6 @@ export default function MusicPlayer() {
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [volume, setVolume] = useState(70);
-    const [isShuffle, setIsShuffle] = useState(false);
     const [repeat, setRepeat] = useState<'off' | 'all' | 'one'>('off');
 
     const currentSong = useSelector(
@@ -36,6 +32,10 @@ export default function MusicPlayer() {
 
     const currentCover = useSelector(
         (state: RootState) => state.song.currentCover
+    );
+
+    const isShuffle = useSelector(
+        (state: RootState) => state.song.isShuffled
     );
 
     // Handle play/pause
@@ -48,6 +48,21 @@ export default function MusicPlayer() {
             }
             setIsPlaying(!isPlaying);
         }
+    };
+
+    // Handle next track
+    const handleNextTrack = () => {
+        dispatch(playNext());
+    };
+
+    // Handle previous track
+    const handlePreviousTrack = () => {
+        dispatch(playPrevious());
+    };
+
+    // Handle shuffle toggle
+    const handleShuffleChange = () => {
+        dispatch(toggleShuffle());
     };
 
     // Handle seek
@@ -75,7 +90,7 @@ export default function MusicPlayer() {
         });
     };
 
-    // Update time
+    // Update time and handle song end
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -84,9 +99,15 @@ export default function MusicPlayer() {
         const handleLoadedMetadata = () => setDuration(audio.duration);
         const handleEnded = () => {
             if (repeat === 'one') {
+                // Repeat one: restart current song
                 audio.currentTime = 0;
                 audio.play();
+            } else if (repeat === 'all') {
+                // Repeat all: play next song
+                dispatch(playNext());
+                setIsPlaying(true);
             } else {
+                // No repeat: stop playing
                 setIsPlaying(false);
             }
         };
@@ -100,7 +121,7 @@ export default function MusicPlayer() {
             audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
             audio.removeEventListener('ended', handleEnded);
         };
-    }, [repeat]);
+    }, [repeat, dispatch]);
 
     // Auto play when song changes
     useEffect(() => {
@@ -116,18 +137,28 @@ export default function MusicPlayer() {
 
     return (
         <>
+            {/* Hidden Audio Element - ALWAYS RENDERED */}
+            <audio
+                ref={audioRef}
+                src={currentSong.song_url}
+                onEnded={() => setIsPlaying(false)}
+            />
+
             {/* Mini Player */}
-            <motion.div
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 100, opacity: 0 }}
-                onClick={() => setOpen(true)}
-                className="fixed bottom-20 md:bottom-6 right-6 z-40 w-80 cursor-pointer group"
-            >
-                <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="flex items-center gap-4 rounded-xl border bg-gradient-to-r from-background to-background/80 p-4 shadow-2xl backdrop-blur-md hover:shadow-2xl transition-shadow"
-                >
+            <AnimatePresence>
+                {currentSong && (
+                    <motion.div
+                        initial={{ y: 100, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 100, opacity: 0 }}
+                        className="fixed bottom-20 md:bottom-6 right-6 z-40 w-80 cursor-pointer group"
+                    >
+                        <motion.div
+                            onClick={() => setOpen(true)}
+                            whileHover={{ scale: 1.02 }}
+                            className="flex items-center gap-4 rounded-xl border bg-gradient-to-r from-background to-background/80 p-4 shadow-2xl backdrop-blur-md hover:shadow-2xl transition-shadow"
+                            title="Click to expand player"
+                        >
                     {/* Album Art */}
                     <motion.div
                         className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg"
@@ -195,27 +226,51 @@ export default function MusicPlayer() {
                             variant="ghost"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                setOpen(false);
-                                dispatch(clearSong());
+                                setOpen(true);
                             }}
                             className="rounded-full h-8 w-8"
+                            title="Expand player"
                         >
-                            <X className="w-4 h-4" />
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6v12h4m8-12h4v12h-4m-3-9v6" />
+                            </svg>
                         </Button>
                     </motion.div>
-                </motion.div>
-            </motion.div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Full Player Drawer */}
             <Drawer open={open} onOpenChange={setOpen}>
                 <DrawerContent className="h-screen bg-gradient-to-b from-background to-background/50">
-                    <DrawerHeader className="flex items-center justify-between">
+                    <DrawerHeader className="flex items-center justify-between pb-4">
                         <DrawerTitle>Now Playing</DrawerTitle>
-                        <DrawerClose asChild>
-                            <Button variant="ghost" size="icon">
+                        <div className="flex gap-2">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setOpen(false)}
+                                title="Minimize player"
+                            >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                                </svg>
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => {
+                                    setOpen(false);
+                                    setIsPlaying(false);
+                                    dispatch(clearSong());
+                                }}
+                                title="Stop and close"
+                                className="hover:text-destructive"
+                            >
                                 <X className="w-5 h-5" />
                             </Button>
-                        </DrawerClose>
+                        </div>
                     </DrawerHeader>
 
                     {currentSong && (
@@ -281,8 +336,8 @@ export default function MusicPlayer() {
                                 <PlayerControls
                                     isPlaying={isPlaying}
                                     onPlayPause={handlePlayPause}
-                                    onNextTrack={() => {}}
-                                    onPreviousTrack={() => {}}
+                                    onNextTrack={handleNextTrack}
+                                    onPreviousTrack={handlePreviousTrack}
                                     currentTime={currentTime}
                                     duration={duration}
                                     onSeek={handleSeek}
@@ -291,26 +346,29 @@ export default function MusicPlayer() {
                                     repeat={repeat}
                                     onRepeatChange={handleRepeatChange}
                                     isShuffle={isShuffle}
-                                    onShuffleChange={() => setIsShuffle(!isShuffle)}
+                                    onShuffleChange={handleShuffleChange}
                                 />
                             </div>
 
                             {/* Share & Options */}
-                            <div className="flex gap-4 w-full">
-                                <Button variant="outline" className="flex-1">
-                                    Share
-                                </Button>
-                                <Button variant="outline" className="flex-1">
-                                    Add to Playlist
-                                </Button>
-                            </div>
+                            <div className="w-full space-y-4">
+                                <div className="flex gap-3">
+                                    <Button variant="outline" className="flex-1" size="lg">
+                                        Share
+                                    </Button>
+                                    <Button variant="outline" className="flex-1" size="lg">
+                                        Add to Playlist
+                                    </Button>
+                                </div>
 
-                            {/* Hidden Audio Element */}
-                            <audio
-                                ref={audioRef}
-                                src={currentSong.song_url}
-                                onEnded={() => setIsPlaying(false)}
-                            />
+                                {/* Keyboard Shortcuts Hint */}
+                                <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground space-y-1">
+                                    <p className="font-semibold text-foreground mb-2">Tips:</p>
+                                    <p>• Click the minimize button to keep playing in the mini player</p>
+                                    <p>• Use X button to stop playback and close</p>
+                                    <p>• Adjust volume, shuffle, and repeat from the controls</p>
+                                </div>
+                            </div>
                         </motion.div>
                     )}
                 </DrawerContent>
